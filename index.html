@@ -5,24 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task Manager</title>
   <link rel="stylesheet" href="styles.css">
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const themeToggle = document.getElementById("themeToggle");
-      const currentTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-      document.body.classList.toggle("dark-theme", currentTheme === "dark");
-      themeToggle.textContent = currentTheme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
-      
-      themeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark-theme");
-        const newTheme = document.body.classList.contains("dark-theme") ? "dark" : "light";
-        localStorage.setItem("theme", newTheme);
-        themeToggle.textContent = newTheme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
-      });
-    });
-  </script>
 </head>
 <body>
   <header>
+    <button id="languageToggle">🌐 العربية</button>
     <h1>📝 Task Manager</h1>
     <nav>
       <ul>
@@ -35,17 +21,19 @@
     <button id="themeToggle">🌙 Toggle Theme</button>
   </header>
 
-  <div class="task-input-container">
-    <input type="text" id="taskInput" placeholder="Add a new task...">
-    <select id="taskCategory">
-      <option value="work">💼 Work</option>
-      <option value="personal">🏠 Personal</option>
-      <option value="study">📚 Study</option>
-    </select>
-    <button id="addTaskBtn">➕ Add Task</button>
-  </div>
+  <main>
+    <div class="task-input-container">
+      <input type="text" id="taskInput" placeholder="Add a new task...">
+      <select id="taskCategory">
+        <option value="work">💼 Work</option>
+        <option value="personal">🏠 Personal</option>
+        <option value="study">📚 Study</option>
+      </select>
+      <button id="addTaskBtn">➕ Add Task</button>
+    </div>
 
-  <ul id="task-list"></ul>
+    <ul id="task-list"></ul>
+  </main>
 
   <footer>
     <p>&copy; 2025 Task Manager | <a href="about.html">About</a> | <a href="help.html">Help</a></p>
