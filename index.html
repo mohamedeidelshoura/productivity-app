@@ -1,44 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Manager</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProductivityPro Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <button id="languageToggle">🌐 العربية</button>
-    <h1>📝 Task Manager</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html">Tasks</a></li>
-        <li><a href="statistics.html">Statistics</a></li>
-        <li><a href="calendar.html">Calendar</a></li>
-        <li><a href="settings.html">Settings</a></li>
-      </ul>
-    </nav>
-    <button id="themeToggle">🌙 Toggle Theme</button>
-  </header>
+    <div class="container">
+        <!-- Sidebar Menu -->
+        <aside class="sidebar">
+            <h2>🚀 ProductivityPro</h2>
+            <input type="text" id="search-bar" placeholder="Search...">
+            <ul id="menu-list">
+                <li>📋 Task Management</li>
+                <li>📊 Habit Tracking</li>
+                <li>🕒 Time Planning</li>
+                <li>🔄 Recurring Tasks</li>
+                <li>⏰ Reminders</li>
+                <li>📅 Google Calendar</li>
+                <li>📌 Notion & Trello</li>
+                <li>👥 Group Collaboration</li>
+            </ul>
+        </aside>
 
-  <main>
-    <div class="task-input-container">
-      <input type="text" id="taskInput" placeholder="Add a new task...">
-      <select id="taskCategory">
-        <option value="work">💼 Work</option>
-        <option value="personal">🏠 Personal</option>
-        <option value="study">📚 Study</option>
-      </select>
-      <button id="addTaskBtn">➕ Add Task</button>
+        <!-- Main Content -->
+        <main class="dashboard">
+            <div class="header">
+                <button id="toggle-theme">🌙</button>
+                <button id="toggle-language">العربية</button>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Task Management</h3>
+                    <p>Complete project design</p>
+                    <p>Team meeting</p>
+                    <input type="checkbox"> 
+                </div>
+
+                <div class="card">
+                    <h3>Time Planning</h3>
+                    <p>Plan weekly schedule</p>
+                    <p>Review monthly goals</p>
+                    <button class="edit-btn">Edit</button>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <ul id="task-list"></ul>
-  </main>
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Task</h2>
+            <input type="text" id="task-input" placeholder="Edit your task...">
+            <button id="save-task">Save</button>
+        </div>
+    </div>
 
-  <footer>
-    <p>&copy; 2025 Task Manager | <a href="about.html">About</a> | <a href="help.html">Help</a></p>
-  </footer>
-
-  <script src="renderer.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

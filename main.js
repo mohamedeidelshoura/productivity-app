@@ -1,37 +1,45 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+// main.js - Electron Main Process
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
-const fs = require('fs');
 
 let mainWindow;
 
 app.whenReady().then(() => {
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false
-    }
-  });
+    mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
 
-  mainWindow.loadFile('index.html');
+    mainWindow.loadFile('index.html');
 });
 
+// Handle notifications
+ipcMain.on('show-notification', (event, message) => {
+    new Notification({ title: 'Reminder', body: message }).show();
+});
+
+// Close when all windows are closed (except MacOS)
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
-// التعامل مع قراءة وكتابة المهام في ملف JSON
-const tasksFile = path.join(__dirname, 'tasks.json');
+// Additional Files:
+const fs = require('fs');
+const { dialog } = require('electron');
+
+ipcMain.on('save-task', (event, task) => {
+    fs.appendFileSync('tasks.json', JSON.stringify(task) + '\n');
+    event.reply('task-saved', 'Task saved successfully!');
+});
 
 ipcMain.handle('load-tasks', async () => {
-  if (!fs.existsSync(tasksFile)) {
-    fs.writeFileSync(tasksFile, JSON.stringify([]));
-  }
-  const tasks = JSON.parse(fs.readFileSync(tasksFile));
-  return tasks;
-});
-
-ipcMain.handle('save-tasks', async (_, tasks) => {
-  fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+    if (!fs.existsSync('tasks.json')) return [];
+    const data = fs.readFileSync('tasks.json', 'utf-8');
+    return data.split('\n').filter(line => line).map(JSON.parse);
 });

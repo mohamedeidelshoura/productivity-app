@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProductivityPro - Settings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ProductivityPro</h1>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="notifications.html">Notifications</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="settings">
+      <h2>Settings</h2>
+
+      <div class="general-settings">
+        <h3>General</h3>
+        <label>Language Preferences: <select>
+          <option>English</option>
+          <option>Arabic</option>
+        </select></label>
+
+        <label>Email Notifications: <input type="checkbox" checked></label>
+        <label>Push Notifications: <input type="checkbox" checked></label>
+      </div>
+
+      <div class="account-settings">
+        <h3>Account</h3>
+        <label>Username: <input type="text" placeholder="Enter your username"></label>
+        <label>Email: <input type="email" placeholder="Enter your email"></label>
+        <label>Password: <input type="password" placeholder="Enter a new password"></label>
+      </div>
+
+      <div class="theme-settings">
+        <h3>Theme Settings</h3>
+        <label>Light Theme: <input type="radio" name="theme" value="light" checked></label>
+        <label>Dark Theme: <input type="radio" name="theme" value="dark"></label>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2023 ProductivityPro</p>
+  </footer>
+</body>
+</html>

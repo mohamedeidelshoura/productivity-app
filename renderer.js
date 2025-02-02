@@ -1,97 +1,71 @@
-// renderer.js
-document.addEventListener("DOMContentLoaded", () => {
-  const taskInput = document.getElementById("taskInput");
-  const addTaskBtn = document.getElementById("addTaskBtn");
-  const taskList = document.getElementById("task-list");
-  const themeToggle = document.getElementById("themeToggle");
+// renderer.js - Manages UI interactions in the Electron app
 
-  // Load saved theme
-  const currentTheme = localStorage.getItem("theme") || "light";
-  document.body.classList.toggle("dark-theme", currentTheme === "dark");
-  themeToggle.textContent = currentTheme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+document.addEventListener('DOMContentLoaded', () => {
+  const taskInput = document.getElementById('task-input');
+  const addTaskBtn = document.getElementById('add-task-btn');
+  const taskList = document.getElementById('task-list');
+  const notifyBtn = document.getElementById('notify-btn');
+  const themeToggle = document.getElementById('theme-toggle');
 
-  // Toggle theme with smooth transition
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.add("theme-transition");
-    document.body.classList.toggle("dark-theme");
-    const newTheme = document.body.classList.contains("dark-theme") ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-    themeToggle.textContent = newTheme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+  // Load tasks from storage
+  async function loadTasks() {
+      const tasks = await window.electron.loadTasks();
+      taskList.innerHTML = ''; // Clear existing list
+      tasks.forEach(task => addTaskToUI(task));
+  }
 
-    // Remove transition class after the animation
-    setTimeout(() => {
-      document.body.classList.remove("theme-transition");
-    }, 300);
-  });
+  // Add task to UI
+  function addTaskToUI(task) {
+      const li = document.createElement('li');
+      li.textContent = task.name;
+      li.classList.add('task-item');
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '🗑';
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.addEventListener('click', () => deleteTask(task, li));
 
-  // Add task
-  addTaskBtn.addEventListener("click", () => {
-    const taskText = taskInput.value.trim();
-    const taskCategory = document.getElementById("taskCategory").value;
-    if (taskText) {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <span>${taskText} (${taskCategory})</span>
-        <div class="task-actions">
-          <button onclick="editTask(this)">✏️</button>
-          <button onclick="deleteTask(this)">❌</button>
-        </div>
-      `;
+      const completeBtn = document.createElement('button');
+      completeBtn.textContent = '✔';
+      completeBtn.classList.add('complete-btn');
+      completeBtn.addEventListener('click', () => toggleTaskCompletion(li));
+
+      li.appendChild(completeBtn);
+      li.appendChild(deleteBtn);
       taskList.appendChild(li);
-      taskInput.value = "";
-    }
-  });
+  }
 
-  // Edit task
-  window.editTask = (button) => {
-    const li = button.closest("li");
-    const taskText = li.querySelector("span").textContent.split(" (")[0];
-    const newText = prompt("Edit your task:", taskText);
-    if (newText) {
-      li.querySelector("span").textContent = `${newText} (${taskCategory})`;
-    }
-  };
+  // Save task
+  addTaskBtn.addEventListener('click', () => {
+      const task = { name: taskInput.value };
+      if (task.name.trim() === '') return;
+
+      window.electron.saveTask(task);
+      addTaskToUI(task);
+      taskInput.value = ''; // Clear input
+  });
 
   // Delete task
-  window.deleteTask = (button) => {
-    const li = button.closest("li");
-    li.remove();
-  };
-});
-
-// Language toggle
-const languageToggle = document.getElementById("languageToggle");
-const currentLanguage = localStorage.getItem("language") || "en";
-
-// Set initial language
-document.body.setAttribute("dir", currentLanguage === "ar" ? "rtl" : "ltr");
-languageToggle.textContent = currentLanguage === "ar" ? "🌐 English" : "🌐 العربية";
-
-// Toggle language
-languageToggle.addEventListener("click", () => {
-  const newLanguage = currentLanguage === "ar" ? "en" : "ar";
-  document.body.setAttribute("dir", newLanguage === "ar" ? "rtl" : "ltr");
-  localStorage.setItem("language", newLanguage);
-  languageToggle.textContent = newLanguage === "ar" ? "🌐 English" : "🌐 العربية";
-  location.reload(); // Refresh to apply language changes
-});
-
-// Toast notifications
-function showToast(message, duration = 3000) {
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
-  setTimeout(() => {
-    toast.remove();
-  }, duration);
-}
-
-// Example usage
-addTaskBtn.addEventListener("click", () => {
-  const taskText = taskInput.value.trim();
-  if (taskText) {
-    showToast("Task added successfully!");
+  function deleteTask(task, taskElement) {
+      taskElement.remove();
+      window.electron.deleteTask(task);
   }
+
+  // Toggle task completion
+  function toggleTaskCompletion(taskElement) {
+      taskElement.classList.toggle('completed');
+  }
+
+  // Show notification
+  notifyBtn.addEventListener('click', () => {
+      window.electron.showNotification('Time to check your tasks!');
+  });
+
+  // Toggle theme
+  themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+  });
+
+  // Load saved tasks on startup
+  loadTasks();
 });
